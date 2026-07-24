@@ -1,0 +1,141 @@
+{
+  "opens": true,
+  "page_count": 26,
+  "pdf_bytes": 2841987,
+  "raw_mermaid_fence": false,
+  "has_how_to_read": true,
+  "has_unknown": true,
+  "has_pkl": true,
+  "has_seller_loan_example": true,
+  "no_training_claim": false,
+  "missing_diagram_titles": [],
+  "pages_with_images": 22,
+  "png_info": [
+    {
+      "n": 1,
+      "w": 1488,
+      "h": 2230,
+      "bytes": 118799
+    },
+    {
+      "n": 2,
+      "w": 1242,
+      "h": 1922,
+      "bytes": 92516
+    },
+    {
+      "n": 3,
+      "w": 1270,
+      "h": 2922,
+      "bytes": 163455
+    },
+    {
+      "n": 4,
+      "w": 1698,
+      "h": 3864,
+      "bytes": 211951
+    },
+    {
+      "n": 5,
+      "w": 1056,
+      "h": 3018,
+      "bytes": 141805
+    },
+    {
+      "n": 6,
+      "w": 1170,
+      "h": 2516,
+      "bytes": 143112
+    },
+    {
+      "n": 7,
+      "w": 1336,
+      "h": 7482,
+      "bytes": 337100
+    },
+    {
+      "n": 8,
+      "w": 1122,
+      "h": 1822,
+      "bytes": 99886
+    },
+    {
+      "n": 9,
+      "w": 3568,
+      "h": 674,
+      "bytes": 67557
+    },
+    {
+      "n": 10,
+      "w": 3002,
+      "h": 2610,
+      "bytes": 170111
+    },
+    {
+      "n": 11,
+      "w": 1912,
+      "h": 1140,
+      "bytes": 116620
+    },
+    {
+      "n": 12,
+      "w": 2748,
+      "h": 1710,
+      "bytes": 160706
+    },
+    {
+      "n": 13,
+      "w": 3668,
+      "h": 2198,
+      "bytes": 211327
+    },
+    {
+      "n": 14,
+      "w": 1796,
+      "h": 1164,
+      "bytes": 89333
+    },
+    {
+      "n": 15,
+      "w": 1184,
+      "h": 2196,
+      "bytes": 112135
+    },
+    {
+      "n": 16,
+      "w": 2080,
+      "h": 978,
+      "bytes": 108688
+    },
+    {
+      "n": 17,
+      "w": 4352,
+      "h": 924,
+      "bytes": 133364
+    },
+    {
+      "n": 18,
+      "w": 3758,
+      "h": 982,
+      "bytes": 130601
+    },
+    {
+      "n": 19,
+      "w": 592,
+      "h": 1954,
+      "bytes": 59868
+    },
+    {
+      "n": 20,
+      "w": 1046,
+      "h": 4408,
+      "bytes": 163555
+    }
+  ],
+  "arch_visual_exists": true,
+  "arch_alias_exists": true,
+  "worker_pdf_exists": true,
+  "arch_not_overwritten_same_as_worker": true,
+  "failures": [],
+  "passed": true
+}

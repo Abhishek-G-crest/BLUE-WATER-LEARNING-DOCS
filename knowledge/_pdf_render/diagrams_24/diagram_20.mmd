@@ -1,0 +1,20 @@
+flowchart TD
+  Q["SQS receives<br/>seller-loan-id = 117-42_2208066387<br/>+ loan_id ?"]
+  UNK["??? UNKNOWN enrichment ???<br/>??? KT CONFIRMATION REQUIRED ???"]
+  MAIN["scripts/main.py"]
+  CC["commitment_check Postgres"]
+  GATE{"loan_id present?"}
+  PL["processLoan"]
+  DDB["DynamoDB query 117-42_2208066387"]
+  S3["S3 SuperTransfer/117/42/2208066387/"]
+  CLS["Textract → TF-IDF → NB → labels"]
+  SEG["segregate → per-doc PDFs"]
+  EXT["return_ExtractFunctions → fields"]
+  DD["send_values_to_DD"]
+  UP["DDB update_item + S3 outputs"]
+  CLN["finally cleanup + SQS delete"]
+
+  UNK -.-> Q
+  Q --> MAIN --> CC --> GATE
+  GATE -->|yes| PL --> DDB --> S3 --> CLS --> SEG --> EXT --> DD --> UP --> CLN
+  GATE -->|no| SKIP["skip + DELETE"]

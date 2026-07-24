@@ -1,0 +1,11 @@
+flowchart TD
+  DDB[(DynamoDB item<br/>sellerID / Buyer / LoanNum)]
+  S3[(S3 SuperTransfer/s/b/loan/)]
+  LIST["list_of_uploaded_files"]
+  DL["download_object_files"]
+  LOCAL["local_loan_files/{seller-loan-id}/"]
+  MERGE["Merge PDFs → blob<br/>or use classification JSON sidecar"]
+  UNK["Who uploaded source docs?<br/>??? UNKNOWN — KT ???"]
+
+  DDB --> S3 --> LIST --> DL --> LOCAL --> MERGE
+  UNK -.-> S3

@@ -1,0 +1,12 @@
+flowchart TD
+  W[processLoan]
+  INIT["DD document initialization APIs"]
+  SEND["send_values_to_DD"]
+  MISS["missing files / extracted fields APIs"]
+  DJ["Django HTTP<br/>/msrx/duediligence/...<br/>/msrx/supertransfer/..."]
+  PG[(PostgreSQL DD data<br/>via ORM)]
+
+  W --> INIT --> DJ
+  W --> SEND --> DJ
+  W --> MISS --> DJ
+  DJ --> PG

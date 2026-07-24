@@ -1,0 +1,14 @@
+flowchart TD
+  PAGE[PDF page / document]
+  DET["Textract detect_document_text<br/>classification OCR<br/>CONFIRMED FROM CODE"]
+  AN["Textract analyze_document<br/>forms / queries / analyze_id<br/>field extraction<br/>CONFIRMED FROM CODE"]
+  TES["Tesseract pytesseract<br/>secondary — some extractors<br/>CONFIRMED FROM CODE"]
+  CLS[Classification Text column]
+  FLD[Extractor field dict]
+
+  PAGE --> DET --> CLS
+  PAGE --> AN --> FLD
+  PAGE --> TES --> FLD
+
+  UNK["Training OCR pipeline location<br/>??? UNKNOWN — KT ???"]
+  UNK -.-> DET

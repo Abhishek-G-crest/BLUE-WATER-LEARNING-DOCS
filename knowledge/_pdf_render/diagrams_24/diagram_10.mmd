@@ -1,0 +1,27 @@
+flowchart TD
+  subgraph OFFLINE["OFFLINE TRAINING — NOT in worker"]
+    TD[training data] --> FIT[TF-IDF fit]
+    FIT --> TR[Naive Bayes train]
+    TR --> PK[".pkl files saved"]
+  end
+
+  subgraph LOAD["WORKER LOAD — CONFIRMED FROM CODE"]
+    EMC["ensure_model_context / get_main_model"]
+    NB["naive_bayes_classifier.pkl"]
+    TF["tf_idf.pkl"]
+    JT["label_tokenizer.json"]
+    PM["page_number_mappings.json"]
+    BUY["optional customized_model/{branch}/{buyer}/"]
+  end
+
+  subgraph USE["PER-PAGE INFERENCE"]
+    TRF["tf_idf.transform"]
+    PR["predict_proba"]
+    OUT[label + confidence]
+  end
+
+  PK -.->|deploy / load only| EMC
+  EMC --> NB & TF & JT & PM
+  BUY -.-> EMC
+  TF --> TRF --> PR
+  NB --> PR --> OUT

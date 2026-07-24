@@ -1,0 +1,19 @@
+flowchart TD
+  NOTE["★ ILLUSTRATIVE PAGE LABELS ★"]
+  BLOB[Blob PDF]
+  P1["Page → Note"]
+  P2["Page → Note"]
+  P3["Page → Credit Report"]
+  P4["Page → Security Instrument"]
+  GRP["segregate_documents<br/>group + split"]
+  O1[Note.pdf]
+  O2[Credit_Report.pdf]
+  O3[Security_Instrument.pdf]
+  OUT[S3 upload + extraction threads]
+
+  ALT["Alternate: zip_to_final_dict<br/>if classification sidecar exists"]
+
+  NOTE --> BLOB
+  BLOB --> P1 & P2 & P3 & P4 --> GRP
+  GRP --> O1 & O2 & O3 --> OUT
+  ALT -.-> GRP

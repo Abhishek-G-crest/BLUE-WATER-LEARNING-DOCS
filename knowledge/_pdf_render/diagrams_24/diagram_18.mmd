@@ -1,0 +1,24 @@
+flowchart TD
+  subgraph DELETE_YES["DELETE MESSAGE — CONFIRMED"]
+    D1[Duplicate current_processing]
+    D2[commitment_check false]
+    D3[loan_id missing]
+    D4[processLoan success]
+    D5[processLoan Failed exception path]
+  end
+
+  subgraph DELETE_NO["NO DELETE — CONFIRMED"]
+    N1[Malformed JSON<br/>visibility timeout retry]
+  end
+
+  subgraph UNKNOWN_OPS["UNKNOWN — KT"]
+    U1[DLQ configuration]
+    U2[Redrive policy]
+    U3[Ops replay SOP for delete-on-skip]
+  end
+
+  D1 & D2 & D3 & D4 & D5 --> DEL[delete_message]
+  N1 --> VIS[visibility / sleep 120]
+  DEL -.-> U1
+  DEL -.-> U2
+  DEL -.-> U3

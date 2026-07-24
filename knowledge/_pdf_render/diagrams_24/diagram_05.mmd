@@ -1,0 +1,16 @@
+flowchart TD
+  IN["SQS body<br/>seller-loan-id"]
+  PARSE["Parse:<br/>seller_id = split('-')[0]<br/>loan_number = split('_')[1]<br/>CONFIRMED FROM CODE"]
+  PG[(PostgreSQL MSRX)]
+  U["msrx_msrx_user<br/>user_details.transfer_settings<br/>.super_transfer_commit_check"]
+  NEED{"check required<br/>== true?"}
+  JOIN["Join coissue_tape + seller<br/>status = confirmed?"]
+  OK["return flag=True<br/>+ coissue_loan_id"]
+  BAD["return flag=False"]
+  SKIP["main.py: skip processLoan<br/>DELETE message anyway"]
+
+  IN --> PARSE --> PG --> U --> NEED
+  NEED -->|no| OK
+  NEED -->|yes| JOIN
+  JOIN -->|yes| OK
+  JOIN -->|no| BAD --> SKIP

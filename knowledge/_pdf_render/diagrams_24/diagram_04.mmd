@@ -1,0 +1,26 @@
+flowchart TD
+  R["receive_message<br/>loan queue"]
+  J{JSON parse OK?}
+  D1["NO delete<br/>sleep 120 / visibility retry<br/>CONFIRMED FROM CODE"]
+  DUP{"seller-loan-id ==<br/>current_processing?"}
+  DEL_DUP["delete_message + sleep 2<br/>CONFIRMED FROM CODE"]
+  CC["commitment_check<br/>Postgres"]
+  CF{commit_flag?}
+  LID{"loan_id in body?"}
+  PL["processLoan + heartbeat"]
+  DEL["delete_message ALWAYS<br/>after this branch"]
+
+  MARK["⚠️ DELETE-ON-SKIP<br/>CONFIRMED FROM CODE<br/>DESIGN INTENT — KT"]
+
+  R --> J
+  J -->|Exception| D1
+  J -->|OK| DUP
+  DUP -->|yes| DEL_DUP
+  DUP -->|no| CC
+  CC --> CF
+  CF -->|no| DEL
+  CF -->|yes| LID
+  LID -->|no| DEL
+  LID -->|yes| PL --> DEL
+  DEL -.-> MARK
+  DEL_DUP -.-> MARK

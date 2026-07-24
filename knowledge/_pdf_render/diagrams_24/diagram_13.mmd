@@ -1,0 +1,18 @@
+flowchart TD
+  DOC[Segregated document PDF]
+  TYP[document type label]
+  MAP["return_ExtractFunctions()"]
+  N["Note → note()"]
+  CD["Closing_Disclosure → extractCD()"]
+  CR["Credit_Report → CreditReport()"]
+  SI["Security_Instrument → extractDot()"]
+  LA["Loan_Application-New_Format → loanAppNew()"]
+  MORE["… Appraisal, Amortization,<br/>Escrow, Title, DU/LPA, W2, Paystub, …"]
+  TX[Textract / regex / parser]
+  FD[extracted field dict]
+  RC[recheck / post-processing]
+  SEND["prepare_outputdict_and_values<br/>→ send_values_to_DD"]
+
+  DOC --> TYP --> MAP
+  MAP --> N & CD & CR & SI & LA & MORE
+  N & CD & CR & SI & LA & MORE --> TX --> FD --> RC --> SEND

@@ -1,0 +1,11 @@
+flowchart TD
+  CRON["cron: * * * * *<br/>CONFIRMED FROM CONFIG"]
+  FL["flock -w 1<br/>PURPOSE: single worker instance<br/>CONFIRMED FROM CONFIG"]
+  PY["python3.12 scripts/main.py"]
+  HOLD{"flock acquired?"}
+  RUN["main() long-poll loop runs"]
+  SKIP["exit immediately<br/>another instance holds lock"]
+
+  CRON --> FL --> HOLD
+  HOLD -->|yes| PY --> RUN
+  HOLD -->|no within 1s| SKIP

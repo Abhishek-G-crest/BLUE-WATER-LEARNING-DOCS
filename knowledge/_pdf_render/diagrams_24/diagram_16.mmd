@@ -1,0 +1,17 @@
+flowchart TD
+  W[Worker]
+
+  subgraph DIRECT["DIRECT psycopg2 — CONFIRMED FROM CODE"]
+    CC["commitment_check<br/>msrx_msrx_user<br/>msrx_client_coissue_tape<br/>msrx_client_coissue_seller"]
+    BS["boarding staging merge SQL<br/>msrx_boarding_staging"]
+  end
+
+  subgraph VIAAPI["VIA DJANGO HTTP"]
+    DD[Due Diligence / ST APIs]
+  end
+
+  PG[(PostgreSQL MSRX DB)]
+
+  W --> CC --> PG
+  W --> BS --> PG
+  W --> DD --> PG

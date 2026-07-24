@@ -1,0 +1,13 @@
+flowchart TD
+  SQS[SQS seller-loan-id]
+  Q["table.query<br/>KeyCondition seller-loan-id<br/>MUST exist"]
+  META["Read LoanNum / sellerID / Buyer<br/>+ loan_id / deal_id / porfolio_id if present"]
+  PROC[processLoan work]
+  UP["table.update_item<br/>Files / Extracted_Fields / loan_Status / …"]
+  CREATE["Initial put_item creator<br/>?????????????????<br/>??? UNKNOWN — KT ???<br/>?????????????????"]
+
+  DEP["supertransfer-deploymentDB<br/>query env → process_flag"]
+
+  CREATE -.-> Q
+  SQS --> Q --> META --> PROC --> UP
+  DEP -.->|startup loop gate| SQS

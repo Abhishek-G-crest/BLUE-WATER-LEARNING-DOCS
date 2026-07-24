@@ -1,0 +1,10 @@
+flowchart TD
+  DONE["processLoan try path ends<br/>Processed OR Failed"]
+  FIN["finally block"]
+  META["Upload metadata / log to S3"]
+  RM["rmtree local_loan_files/{seller-loan-id}"]
+  RET["return to main.py"]
+  DEL["delete_message SQS"]
+  LOOP["continue process_flag loop"]
+
+  DONE --> FIN --> META --> RM --> RET --> DEL --> LOOP

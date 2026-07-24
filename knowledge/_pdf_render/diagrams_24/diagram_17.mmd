@@ -1,0 +1,13 @@
+flowchart TD
+  F1["Malformed SQS JSON"] --> A1["NO delete<br/>sleep 120 / visibility retry"]
+  F2["Duplicate current_processing"] --> A2["DELETE + sleep 2<br/>NO processLoan"]
+  F3["commitment_check false"] --> A3["NO processLoan<br/>DELETE message"]
+  F4["loan_id missing"] --> A4["NO processLoan<br/>DELETE — HIGH LOSS RISK"]
+  F5["DynamoDB item missing"] --> A5["processLoan → Failed<br/>DELETE anyway"]
+  F6["S3 docs empty / OCR fail"] --> A6["status Failed<br/>DELETE anyway"]
+  F7["Extractor / DD API exception"] --> A7["status Failed<br/>DELETE anyway"]
+
+  KT["DLQ / redrive / replay SOP<br/>??? UNKNOWN — KT ???"]
+  A1 -.-> KT
+  A3 -.-> KT
+  A4 -.-> KT

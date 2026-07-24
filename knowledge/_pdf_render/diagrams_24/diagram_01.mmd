@@ -1,0 +1,20 @@
+flowchart TD
+  subgraph DEPLOY["DEPLOY — CONFIRMED FROM CONFIG"]
+    CD[AWS CodeDeploy]
+    AS["appspec.yml destination<br/>/home/ec2-user/super_transfer_client/"]
+    SC["scripts/start_cron.sh"]
+  end
+
+  subgraph HOST["EC2 WORKER HOST"]
+    CR["crontab entry installed"]
+    UNKHOST["Exact AMI / ASG / hostname<br/>??? UNKNOWN — KT ???"]
+  end
+
+  subgraph ENTRY["PROCESS ENTRY — CONFIRMED FROM CODE"]
+    PY["python3.12 scripts/main.py"]
+    IMP["import helper_functions"]
+    EMC["ensure_model_context()"]
+  end
+
+  CD --> AS --> SC --> CR --> PY --> IMP --> EMC
+  UNKHOST -.-> HOST

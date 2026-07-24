@@ -1,0 +1,18 @@
+flowchart TD
+  START["scripts/main.py module load"]
+  EMC["ensure_model_context()<br/>Secrets + AWS clients<br/>pickle.load NB + TF-IDF + JSON maps"]
+  MN["main()"]
+  REGEN["regenerate_local_loan_directory"]
+  PF{"process_flag()<br/>DynamoDB supertransfer-deploymentDB"}
+  MF["receive_message<br/>missing-file queue first"]
+  LQ["else receive_message<br/>loan queue"]
+  HANDLE["handle message body"]
+  STOP["exit loop"]
+
+  START --> EMC --> MN --> REGEN --> PF
+  PF -->|true| MF
+  MF -->|no message| LQ
+  MF -->|message| HANDLE --> PF
+  LQ -->|message| HANDLE
+  LQ -->|none| PF
+  PF -->|false| STOP
