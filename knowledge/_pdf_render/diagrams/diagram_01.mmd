@@ -1,0 +1,73 @@
+flowchart TD
+  subgraph BROWSER["USER BROWSER"]
+    U[User clicks Yes]
+    R["React ConfirmCommitModalForm<br/>msrx-frontend/client<br/>confirmCommit()"]
+  end
+
+  subgraph FE["FRONTEND SERVER"]
+    CSRF["csrfProtection<br/>server/index.js"]
+    RT["refreshToken<br/>server/utils.js"]
+    PC["postConfirmCommit<br/>server/routes/msrCoissue.js"]
+  end
+
+  subgraph DJ["DJANGO SERVER"]
+    CC["ConfirmCommit.post<br/>api/views/commit.py"]
+    SVC["confirm_commit<br/>msr_commit.py"]
+    SQS_FN["post_loan_to_sqs<br/>support_committing.py"]
+    DD_CREATE["create_commit_dd_records_and_values<br/>support_committing.py"]
+  end
+
+  subgraph PG["POSTGRESQL"]
+    PG1[(Tape status confirmed<br/>+ DD rows later)]
+  end
+
+  subgraph AWS["AWS"]
+    S3[(S3 supertransfer-env<br/>docs check + ST I/O)]
+    SQS[SQS loansToprocess-env]
+    DDB[(DynamoDB supertransfer-envDB)]
+    TX[AWS Textract]
+  end
+
+  subgraph UNK["UNKNOWN COMPONENT"]
+    ENRICH["??????????????????????????????<br/>??? UNKNOWN ENRICHMENT ???<br/>??? KT CONFIRMATION REQUIRED ???<br/>adds loan_id / deal_id / porfolio_id?<br/>??????????????????????????????"]
+  end
+
+  subgraph ST["SUPER TRANSFER WORKER"]
+    MAIN["scripts/main.py<br/>receive_message"]
+    COMMIT["commitment_check<br/>query_msrx.py"]
+    GATE{"loan_id in message?"}
+    PL["processLoan<br/>process_loan_handler.py"]
+    SEG["segregate_documents<br/>classify_label"]
+    EXT["return_ExtractFunctions<br/>extractors"]
+  end
+
+  subgraph DD["DUE DILIGENCE"]
+    DDAPI["HTTP /msrx/duediligence/...<br/>send_values_to_DD"]
+  end
+
+  subgraph BOARD["BOARDING"]
+    BS[Boarding staging status]
+    DEL["deliver_boarding_file<br/>Django scheduler — separate path"]
+    SFTP[Buyer SFTP]
+  end
+
+  U --> R
+  R -->|HTTPS /msrx/confirm-commit| CSRF --> RT --> PC
+  PC -->|Token + tape_id/src| CC --> SVC
+  SVC --> PG1
+  SVC --> S3
+  SVC --> SQS_FN
+  SQS_FN -->|seller-loan_id only| SQS
+  SVC --> DD_CREATE
+  DD_CREATE --> PG1
+  SQS --> ENRICH
+  ENRICH -->|full message?| MAIN
+  MAIN --> COMMIT --> GATE
+  GATE -->|yes| PL
+  PL --> DDB
+  PL --> S3
+  PL --> TX
+  PL --> SEG --> EXT
+  EXT --> DDAPI
+  PL --> BS
+  BS -.->|separate Django path| DEL --> SFTP

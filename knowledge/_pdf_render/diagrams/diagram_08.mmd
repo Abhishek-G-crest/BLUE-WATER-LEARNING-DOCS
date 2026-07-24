@@ -1,0 +1,37 @@
+flowchart TD
+  subgraph ST["SUPER TRANSFER — processLoan"]
+    A["DynamoDB query by seller-loan_id"]
+    B[Resolve S3 folder from DDB]
+    C[Create local folder + start log]
+    D["Boarding staging = In Process"]
+    E[emit started]
+    F["build_processing_context"]
+    G[List + download S3 PDFs]
+    H[Merge PDFs → blob / JSON sidecar]
+    I["segregate_documents OR zip_to_final_dict"]
+    J[Optional SFTP blob upload]
+    K[Split pages → per-doc PDFs]
+    L["Threaded return_ExtractFunctions"]
+    M[Post-extract rechecks / signatures]
+    N["makeOutputFile + HOEPA"]
+    O[Filename mapping → S3]
+    P[DD document initialization]
+    Q["prepare_outputdict_and_values<br/>→ send_values_to_DD"]
+    R["status Processed + emit completed"]
+    S[Missing files + extracted fields APIs]
+    T["DynamoDB update_item"]
+    U[Upload Extracted_Fields.json / CSV / PDFs]
+    V[Stacked zip / bookmarked PDF]
+    W[Notification SQS + optional Bedrock SQS]
+    X["except → status Failed"]
+    Y["finally → metadata/log upload + rmtree"]
+  end
+
+  OUTER["outer main.py:<br/>DELETE SQS message anyway"]
+
+  A-->B-->C-->D-->E-->F-->G-->H-->I-->J-->K-->L-->M-->N-->O-->P-->Q-->R-->S-->T-->U-->V-->W
+  A -.-> X
+  X --> Y
+  W --> Y
+  Y --> OUTER
+  X --> OUTER

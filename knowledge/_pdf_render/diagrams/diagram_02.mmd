@@ -1,0 +1,29 @@
+sequenceDiagram
+  participant User
+  participant ConfirmCommitModalForm
+  participant Axios
+  participant Express as Express csrfProtection
+  participant Refresh as refreshToken
+  participant Route as postConfirmCommit
+  participant View as ConfirmCommit.post
+  participant Svc as confirm_commit
+
+  User->>ConfirmCommitModalForm: clicks Yes
+  ConfirmCommitModalForm->>ConfirmCommitModalForm: onYesClick → commitTimeCheck
+  ConfirmCommitModalForm->>Axios: GET /msrx/check-market-hours
+  Axios->>Express: csrf + cookies
+  Express-->>ConfirmCommitModalForm: 200 OK
+  ConfirmCommitModalForm->>ConfirmCommitModalForm: confirmCommit()
+  Note over ConfirmCommitModalForm,Axios: React body: { tapeId, src }
+  ConfirmCommitModalForm->>Axios: POST /msrx/confirm-commit
+  Axios->>Express: csrfProtection
+  Express->>Refresh: slide auth cookie
+  Refresh->>Route: msrCoissue.postConfirmCommit
+  Note over Route,View: Express remaps → { tape_id, src }<br/>Authorization: Token {auth.key}
+  Route->>View: POST /msrx/api/confirm_commit/
+  View->>Svc: confirm_commit(user, tape_id, src)
+  Svc-->>View: status, details
+  View-->>Route: { status, details }
+  Route-->>Axios: 200 response.data
+  Axios-->>ConfirmCommitModalForm: setCommitResults
+  ConfirmCommitModalForm-->>User: commit-success modal

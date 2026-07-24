@@ -1,0 +1,16 @@
+flowchart TD
+  U["User confirms tape"]
+  D["Django confirm_commit<br/>status = confirmed"]
+  S3["S3 check:<br/>SuperTransfer/117/42/2208066387/"]
+  Q["SQS message body:<br/>seller-loan_id = 117-42_2208066387"]
+  UNK["??? UNKNOWN enrichment ???<br/>??? KT CONFIRMATION REQUIRED ???"]
+  W["Worker main.py"]
+  CC["commitment_check Postgres"]
+  PL["processLoan"]
+  DOC["Download / blob / classify / segregate"]
+  EXT["Extract → send_values_to_DD"]
+  DD["Due Diligence + boarding staging"]
+  BR["Boarding file / SFTP<br/>separate Django path"]
+
+  U --> D --> S3 -->|docs exist| Q --> UNK --> W --> CC --> PL --> DOC --> EXT --> DD
+  DD -.-> BR

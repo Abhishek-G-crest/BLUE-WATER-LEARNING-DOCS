@@ -1,0 +1,108 @@
+{
+  "opens": true,
+  "page_count": 21,
+  "pdf_bytes": 3735829,
+  "raw_mermaid_fence": false,
+  "has_how_to_read": true,
+  "has_unknown": true,
+  "has_seller_loan_example": true,
+  "has_cover": true,
+  "missing_diagram_titles": [],
+  "pages_with_images": 17,
+  "png_info": [
+    {
+      "n": 1,
+      "w": 3358,
+      "h": 7102,
+      "bytes": 548988
+    },
+    {
+      "n": 2,
+      "w": 4394,
+      "h": 2032,
+      "bytes": 192426
+    },
+    {
+      "n": 3,
+      "w": 2948,
+      "h": 5210,
+      "bytes": 299466
+    },
+    {
+      "n": 4,
+      "w": 3036,
+      "h": 1940,
+      "bytes": 203080
+    },
+    {
+      "n": 5,
+      "w": 1356,
+      "h": 3740,
+      "bytes": 209271
+    },
+    {
+      "n": 6,
+      "w": 1806,
+      "h": 4038,
+      "bytes": 203111
+    },
+    {
+      "n": 7,
+      "w": 1698,
+      "h": 3864,
+      "bytes": 212124
+    },
+    {
+      "n": 8,
+      "w": 1382,
+      "h": 7320,
+      "bytes": 345994
+    },
+    {
+      "n": 9,
+      "w": 1780,
+      "h": 3106,
+      "bytes": 182313
+    },
+    {
+      "n": 10,
+      "w": 2804,
+      "h": 1872,
+      "bytes": 185845
+    },
+    {
+      "n": 11,
+      "w": 3842,
+      "h": 2608,
+      "bytes": 229640
+    },
+    {
+      "n": 12,
+      "w": 2192,
+      "h": 1874,
+      "bytes": 220520
+    },
+    {
+      "n": 13,
+      "w": 758,
+      "h": 3552,
+      "bytes": 138161
+    },
+    {
+      "n": 14,
+      "w": 5168,
+      "h": 856,
+      "bytes": 158609
+    },
+    {
+      "n": 15,
+      "w": 2378,
+      "h": 2730,
+      "bytes": 187528
+    }
+  ],
+  "text_has_processLoan": true,
+  "text_has_post_loan": true,
+  "failures": [],
+  "passed": true
+}

@@ -1,0 +1,51 @@
+flowchart TD
+  subgraph BROWSER["USER BROWSER"]
+    R[React SPA]
+  end
+
+  subgraph FE["FRONTEND SERVER"]
+    E[Express BFF]
+  end
+
+  subgraph DJ["DJANGO SERVER"]
+    D[Django API]
+  end
+
+  subgraph DATA["DATABASE"]
+    PG[(PostgreSQL)]
+  end
+
+  subgraph AWS["AWS"]
+    S3[(S3)]
+    SQS[SQS]
+    DDB[(DynamoDB)]
+  end
+
+  subgraph UNK["UNKNOWN"]
+    U["??? ENRICHMENT ???<br/>KT REQUIRED"]
+  end
+
+  subgraph ST["SUPER TRANSFER"]
+    W[Worker]
+  end
+
+  subgraph DD["DUE DILIGENCE"]
+    DD1[DD via Django APIs]
+  end
+
+  subgraph BOARD["BOARDING"]
+    B[Boarding staging]
+    SFTP[Buyer SFTP]
+  end
+
+  R --> E --> D
+  D --> PG
+  D --> S3
+  D --> SQS
+  SQS --> U --> W
+  W <--> S3
+  W <--> DDB
+  W <--> PG
+  W --> DD1
+  W --> B
+  B -.-> SFTP

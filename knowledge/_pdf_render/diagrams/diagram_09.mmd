@@ -1,0 +1,27 @@
+flowchart TD
+  subgraph OFFLINE["OFFLINE TRAINING — NOT in worker runtime"]
+    TD[training data] --> FIT[TF-IDF fit]
+    FIT --> TR[Naive Bayes train]
+    TR --> PK[".pkl files saved"]
+  end
+
+  subgraph RUNTIME["RUNTIME WORKER — inference only"]
+    SRC[Source PDF page]
+    TX["AWS Textract<br/>detect_document_text"]
+    OCR[OCR text → DataFrame Text]
+    TF["tf_idf.transform<br/>tf_idf.pkl"]
+    NB["naive_bayes.predict_proba<br/>naive_bayes_classifier.pkl"]
+    CONF{confidence > 0.7?}
+    LAB[class_names label]
+    MISC[Misc]
+    SEG[→ segregation]
+  end
+
+  BIG["★ NO MODEL TRAINING PER LOAN ★<br/>100 loans today → 0 trains"]
+
+  SRC --> TX --> OCR --> TF --> NB --> CONF
+  CONF -->|yes| LAB --> SEG
+  CONF -->|no| MISC --> SEG
+  PK -.->|deploy / load only| TF
+  PK -.-> NB
+  BIG -.-> RUNTIME

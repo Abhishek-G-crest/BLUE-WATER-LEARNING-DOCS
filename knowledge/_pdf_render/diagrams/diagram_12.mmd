@@ -1,0 +1,22 @@
+flowchart TD
+  subgraph STORES["DATA STORES"]
+    PG[(PostgreSQL<br/>commitment_check MSRX tables<br/>boarding staging merge)]
+    S3[(S3<br/>input PDFs / segregated / JSON / CSV / logs)]
+    DDB[(DynamoDB<br/>query + update_item by seller-loan_id)]
+    SQS[(SQS<br/>job trigger + notification queues)]
+  end
+
+  subgraph ST["SUPER TRANSFER WORKER"]
+    W[scripts/main.py + processLoan]
+  end
+
+  subgraph DD["VIA DJANGO HTTP"]
+    API[Due Diligence / Super Transfer APIs]
+    PG2[(PostgreSQL DD data<br/>behind ORM)]
+  end
+
+  PG <-->|psycopg2 commitment_check| W
+  S3 <-->|download + upload| W
+  DDB <-->|query / update_item<br/>NO runtime put_item found| W
+  SQS <-->|receive / delete / notify| W
+  W -->|send_values_to_DD etc.| API --> PG2

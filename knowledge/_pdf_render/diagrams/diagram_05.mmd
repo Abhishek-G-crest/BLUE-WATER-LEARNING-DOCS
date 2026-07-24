@@ -1,0 +1,28 @@
+flowchart TD
+  subgraph LEFT["DJANGO PRODUCER — msrx_v2.0"]
+    P["post_loan_to_sqs<br/>support_committing.py"]
+    MSG1["sends ONLY one field:<br/>seller-loan_id = 117-42_2208066387"]
+  end
+
+  subgraph AWS["AWS"]
+    Q["SQS loansToprocess-ENV"]
+  end
+
+  subgraph GAP["BIG UNKNOWN — DO NOT LABEL AS LAMBDA"]
+    U["?????????????????????????????????????<br/>??? UNKNOWN ENRICHMENT COMPONENT ???<br/>??? KT CONFIRMATION REQUIRED ???<br/>?????????????????????????????????????"]
+  end
+
+  subgraph RIGHT["SUPER TRANSFER CONSUMER"]
+    NEED["Worker needs:<br/>seller-loan_id + loan_id<br/>+ deal_id + porfolio_id …"]
+    MAIN["scripts/main.py"]
+    IF{"loan_id key present in message?"}
+    PL["processLoan(...)"]
+    SKIP["skip processLoan<br/>DELETE message anyway"]
+  end
+
+  NOTE["NOTE: STLoanLookupView comment says<br/>used by Lambda — comment only;<br/>Lambda NOT found in audited repos"]
+
+  P --> MSG1 --> Q --> U --> NEED --> MAIN --> IF
+  IF -->|yes| PL
+  IF -->|no| SKIP
+  NOTE -.-> U

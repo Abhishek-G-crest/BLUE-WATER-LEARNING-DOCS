@@ -1,0 +1,15 @@
+flowchart TD
+  F1["S3 docs missing at confirm"] --> A1["NO SQS<br/>confirm STILL succeeds<br/>processLoan N/A"]
+  F2["SQS send exception"] --> A2["post_loan_to_sqs False<br/>confirm continues<br/>retry UNKNOWN"]
+  F3["Malformed SQS JSON"] --> A3["NO delete<br/>sleep 120 / visibility retry<br/>DLQ UNKNOWN"]
+  F4["commitment_check false"] --> A4["NO processLoan<br/>DELETE message<br/>retry NO — KT intent"]
+  F5["loan_id missing"] --> A5["NO processLoan<br/>DELETE message<br/>HIGH LOSS RISK — KT"]
+  F6["DynamoDB item missing"] --> A6["processLoan → Failed<br/>DELETE anyway"]
+  F7["OCR / classify / extract fail"] --> A7["status Failed<br/>DELETE anyway"]
+  F8["DD API / processing exception"] --> A8["status Failed<br/>DELETE anyway"]
+  F9["Duplicate current_processing"] --> A9["DELETE + sleep 2<br/>NO processLoan"]
+
+  KT["DLQ / redrive / replay SOP<br/>??? UNKNOWN — KT ???"]
+  A3 -.-> KT
+  A4 -.-> KT
+  A5 -.-> KT

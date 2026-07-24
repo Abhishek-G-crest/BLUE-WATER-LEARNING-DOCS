@@ -1,0 +1,33 @@
+flowchart LR
+  subgraph INPUTS["INPUTS — example"]
+    S["seller_id = 117<br/>MSRX user PK"]
+    B["buyer_id = 42<br/>commitment / aggregator / S3"]
+    L["loan_number = 2208066387<br/>tape_loan_id"]
+  end
+
+  COMBINE["combine → seller-loan_id"]
+  SL["117-42_2208066387"]
+
+  subgraph USES["WHERE USED"]
+    S3U["S3 path<br/>SuperTransfer/117/42/2208066387/"]
+    SQSU["SQS MessageBody<br/>only field from Django"]
+    DDBU["DynamoDB PK"]
+    STU["ST local folder / message id"]
+    PGU["Postgres parse<br/>seller + loan for commitment_check"]
+  end
+
+  subgraph NOTSAME["NOT THE SAME"]
+    SL2["seller-loan_id<br/>composite system id"]
+    LID["loan_id<br/>DD duediligence_loan PK"]
+  end
+
+  S --> COMBINE
+  B --> COMBINE
+  L --> COMBINE
+  COMBINE --> SL
+  SL --> S3U
+  SL --> SQSU
+  SL --> DDBU
+  SL --> STU
+  SL --> PGU
+  SL2 -.->|≠| LID

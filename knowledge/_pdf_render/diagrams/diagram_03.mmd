@@ -1,0 +1,36 @@
+flowchart TD
+  subgraph DJ["DJANGO SERVER"]
+    A["ConfirmCommit.post<br/>api/views/commit.py"]
+    B["confirm_commit<br/>msr_commit.py"]
+    C{tape status = pre-commit?}
+    D["Client_Coissue_Seller<br/>status → confirmed + save"]
+    E["asset_commit_postprocess"]
+    F["loop loans"]
+    G["get_s3_buyer"]
+    H["post_loan_to_sqs<br/>support_committing.py"]
+    I{"S3 folder exists<br/>and not empty?"}
+    J["NO SQS<br/>activity_log fail<br/>confirm CONTINUES"]
+    K["Build seller-loan_id<br/>send_message SQS"]
+    L["bulk_update delivery_month"]
+    M["assign_deals_to_loans"]
+    N["create_commit_dd_records_and_values<br/>⚠️ AFTER SQS"]
+    O["email_commit + auto_resell_async"]
+    P["HTTP { status, details }"]
+  end
+
+  subgraph AWS["AWS"]
+    S3[(S3 SuperTransfer/s/b/l/)]
+    SQS[SQS loansToprocess-env]
+  end
+
+  A --> B --> C
+  C -->|no| FAIL[return failure]
+  C -->|yes| D --> E --> F --> G --> H
+  H --> I
+  I -->|missing| J
+  I -->|exists| K
+  K --> S3
+  K --> SQS
+  J --> L
+  K --> L
+  L --> M --> N --> O --> P

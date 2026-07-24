@@ -1,0 +1,23 @@
+flowchart TD
+  NOTE["★ ILLUSTRATIVE EXAMPLE ★<br/>Not a claim of exact production pages"]
+
+  BLOB["Blob PDF<br/>merged loan documents"]
+
+  P1["Page 1 → Note"]
+  P2["Page 2 → Note"]
+  P3["Page 3 → Credit Report"]
+  P4["Page 4 → Credit Report"]
+  P5["Page 5 → Security Instrument"]
+
+  GRP["group consecutive / related<br/>classified pages<br/>segregate_documents"]
+
+  O1[Note.pdf]
+  O2[Credit_Report.pdf]
+  O3[Security_Instrument.pdf]
+
+  OUT["S3 upload + extraction threads"]
+
+  NOTE --> BLOB
+  BLOB --> P1 & P2 & P3 & P4 & P5
+  P1 & P2 & P3 & P4 & P5 --> GRP
+  GRP --> O1 & O2 & O3 --> OUT

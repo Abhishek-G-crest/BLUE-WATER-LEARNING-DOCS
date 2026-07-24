@@ -1,0 +1,29 @@
+flowchart TD
+  subgraph DEPLOY["DEPLOY — CONFIRMED FROM CONFIG"]
+    CD[AWS CodeDeploy]
+    AS["appspec.yml<br/>→ /home/ec2-user/super_transfer_client/"]
+    SC["scripts/start_cron.sh"]
+    CR["cron: * * * * *"]
+  end
+
+  subgraph LOCK["SINGLE INSTANCE"]
+    FL["flock -w 1<br/>PURPOSE: prevent overlapping<br/>worker instances on same host"]
+  end
+
+  subgraph RUNTIME["SUPER TRANSFER WORKER"]
+    PY["python3.12 scripts/main.py"]
+    IMP["import helper_functions"]
+    EMC["ensure_model_context()"]
+    CFG[Secrets / env]
+    AWSCLI[S3 + DynamoDB + SQS clients]
+    ML["pickle.load NB + TF-IDF + JSON maps"]
+    MN["main()"]
+    PF{"process_flag()<br/>DynamoDB deploymentDB"}
+    POLL["poll: missing-file queue<br/>then loan queue"]
+  end
+
+  CD --> AS --> SC --> CR --> FL --> PY --> IMP --> EMC
+  EMC --> CFG --> AWSCLI --> ML
+  PY --> MN --> PF
+  PF -->|true| POLL
+  PF -->|false| STOP[exit loop]
